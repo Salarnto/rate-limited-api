@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { connectToRedis } from './configs/redis.js';
 import rateLimiter from './middlewares/rateLimiter.js';
 
@@ -12,7 +12,7 @@ connectToRedis();
 app.use(express.json());
 
 // Routes
-app.get('/api', rateLimiter, (req, res) => {
+app.get('/api', rateLimiter, (req: Request, res: Response) => {
     res.status(200).json({ message: 'Hello World!'});
 });
 

@@ -1,6 +1,7 @@
+import { Request, Response, NextFunction } from 'express';
 import { redisClient } from '../configs/redis.js';
 
-const rateLimiter = async (req, res, next) => {
+const rateLimiter = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const clientIp = req.ip;
         const key = `rate_limit:${clientIp}`;
@@ -14,14 +15,15 @@ const rateLimiter = async (req, res, next) => {
         }
     
         if (counter > limit) {
-            return res.status(429).json({ message: 'Too many requests!' });
+            res.status(429).json({ message: 'Too many requests!' });
+            return;
+        } else {
+            next();
         }
-
-        next();
 
     } catch (error) {
         console.log('Redis error:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
