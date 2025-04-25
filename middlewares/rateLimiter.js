@@ -1,4 +1,4 @@
-import redis from "../configs/redis.js";
+import { redisClient } from '../configs/redis.js';
 
 const rateLimiter = async (req, res, next) => {
     try {
@@ -7,10 +7,10 @@ const rateLimiter = async (req, res, next) => {
         const limit = 5;
         const window = 60;
     
-        const counter = await redis.incr(key);
+        const counter = await redisClient.incr(key);
     
         if (counter === 1) {
-            await redis.expire(key, window); // Set expiry on first hit
+            await redisClient.expire(key, window); // Set expiry on first hit
         }
     
         if (counter > limit) {
